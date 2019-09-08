@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Download repository
       run: |
-           git clone https://github.com/SecondFlight/daw-prototype.git
+           git clone --single-branch --branch jake-dev https://github.com/SecondFlight/daw-prototype.git
            cd daw-prototype
            git submodule update --init --recursive
            cd ../
@@ -29,4 +29,8 @@ jobs:
            mkdir appdir
            qmake ../daw-prototype/Prototyping.pro
            make
-           ls
+           make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
+           cd
+           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+           chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+           ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage
